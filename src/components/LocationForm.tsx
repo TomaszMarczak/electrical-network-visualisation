@@ -3,12 +3,12 @@ import { useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
 
-type LocationFormTypes = {
+type ModalFormTypes = {
   show: boolean;
   hide: () => void;
 };
 
-export default function LocationForm({ show, hide }: LocationFormTypes) {
+export default function LocationForm({ show, hide }: ModalFormTypes) {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const areaRef = useRef<HTMLInputElement | null>(null);
   const detailsRef = useRef<HTMLInputElement | null>(null);

@@ -4,6 +4,7 @@ import {
   DeviceObjectType,
   LocationObjectType,
   AlertObjectType,
+  ConnectionObjectType,
 } from "./appTypes";
 
 type ProjectAssetsContextType = {
@@ -13,6 +14,8 @@ type ProjectAssetsContextType = {
   setDevices: (value: DeviceObjectType[]) => void;
   alerts: AlertObjectType[];
   pushAlert: (variant: string, message: string) => void;
+  connections: ConnectionObjectType[];
+  setConnections: (value: ConnectionObjectType[]) => void;
 };
 
 const ProjectAssetsContext = createContext({} as ProjectAssetsContextType);
@@ -34,6 +37,10 @@ export const ProjectAssetsProvider = ({
   );
   const [devices, setDevices] = useLocalStorage<DeviceObjectType[]>(
     "appDevices",
+    []
+  );
+  const [connections, setConnections] = useLocalStorage<ConnectionObjectType[]>(
+    "appConnections",
     []
   );
 
@@ -60,6 +67,8 @@ export const ProjectAssetsProvider = ({
         setDevices,
         alerts,
         pushAlert,
+        connections,
+        setConnections,
       }}
     >
       {children}

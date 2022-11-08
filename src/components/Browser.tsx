@@ -2,14 +2,19 @@ import { Form, Button, Table } from "react-bootstrap";
 import { useState } from "react";
 import DeviceForm from "./DeviceForm";
 import LocationForm from "./LocationForm";
+import ConnectionForm from "./ConnectionForm";
 import LocationsTable from "./LocationsTable";
 import DevicesTable from "./DevicesTable";
+import ConnectionsTable from "./ConnectionsTable";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
 
 export default function Browser() {
   const [addDeviceModalShow, setAddDeviceModalShow] = useState<boolean>(false);
   const [addLocationModalShow, setAddLocationModalShow] =
     useState<boolean>(false);
+  const [addConnectionModalShow, setAddConnectionModalShow] =
+    useState<boolean>(false);
+
   const { locations, devices } = useProjectAssets();
 
   return (
@@ -36,7 +41,7 @@ export default function Browser() {
           </div>
           <LocationsTable />
         </div>
-        <div className="flex-grow-1 d-flex flex-column rounded border p-2 my-2">
+        <div className="flex-grow-1 d-flex flex-column rounded border p-2 my-2 ">
           <div className="d-flex justify-content-between">
             <div className="p-1 me-auto">Devices</div>
             <Button size="sm" onClick={() => setAddDeviceModalShow(true)}>
@@ -46,36 +51,23 @@ export default function Browser() {
           <DevicesTable />
         </div>
       </div>
-      <div className="flex-grow-1 rounded border p-2 my-2">
+      <div
+        className={`flex-grow-1 d-flex flex-column rounded border p-2 my-2 ${
+          devices.length < 1 ? "text-muted bg-light" : ""
+        }`}
+        style={{ minHeight: "10rem" }}
+      >
         <div className="d-flex justify-content-between">
           <div className="p-1 me-auto">Connections</div>
-          <Button size="sm">Add connection</Button>
+          <Button
+            size="sm"
+            disabled={devices.length < 2}
+            onClick={() => setAddConnectionModalShow(true)}
+          >
+            Add connection
+          </Button>
         </div>
-        <Table
-          responsive
-          hover
-          size="sm"
-          className="my-1"
-          style={{ verticalAlign: "middle" }}
-        >
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Cable type</th>
-              <th>Device 1</th>
-              <th>Device 2</th>
-              <th>Length</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>A00001</td>
-              <td>Rozdzielnica główna</td>
-              <td>Maszynownia</td>
-            </tr>
-          </tbody>
-        </Table>
+        <ConnectionsTable />
       </div>
       <DeviceForm
         show={addDeviceModalShow}
@@ -84,6 +76,10 @@ export default function Browser() {
       <LocationForm
         show={addLocationModalShow}
         hide={() => setAddLocationModalShow(false)}
+      />
+      <ConnectionForm
+        show={addConnectionModalShow}
+        hide={() => setAddConnectionModalShow(false)}
       />
     </div>
   );

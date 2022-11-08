@@ -12,6 +12,15 @@ export type DeviceObjectType = {
   details: string | null;
   weight: number;
 };
+export type ConnectionObjectType = {
+  id: string;
+  name: string;
+  cable: string;
+  device1: string;
+  device2: string;
+  status: string;
+  length: number;
+};
 export type AlertObjectType = {
   variant: string;
   message: string;

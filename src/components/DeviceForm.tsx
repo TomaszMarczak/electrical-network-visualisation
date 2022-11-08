@@ -3,12 +3,12 @@ import { useRef } from "react";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
 import { v4 as uuidv4 } from "uuid";
 
-type DeviceFormTypes = {
+type ModalFormTypes = {
   show: boolean;
   hide: () => void;
 };
 
-export default function DeviceForm({ show, hide }: DeviceFormTypes) {
+export default function DeviceForm({ show, hide }: ModalFormTypes) {
   const givenIdRef = useRef<HTMLInputElement | null>(null);
   const nameRef = useRef<HTMLInputElement | null>(null);
   const locationRef = useRef<string>("not specified");
@@ -32,7 +32,7 @@ export default function DeviceForm({ show, hide }: DeviceFormTypes) {
         weight: parseInt(weightRef.current.value),
       };
       setDevices([...devices, newDevice]);
-      pushAlert("success", `New location created!`);
+      pushAlert("success", `New device created!`);
       hide();
     }
   };
@@ -79,9 +79,7 @@ export default function DeviceForm({ show, hide }: DeviceFormTypes) {
                   aria-label="Select area"
                   className=""
                 >
-                  <option value="not specified" hidden>
-                    Select location or leave it unspecified...
-                  </option>
+                  <option value="not specified">Unspecified</option>
                   {locations
                     .sort((a, b) => a.area.localeCompare(b.area))
                     .map((location) => (
