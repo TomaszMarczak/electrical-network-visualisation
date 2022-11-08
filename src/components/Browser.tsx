@@ -1,20 +1,17 @@
-import { Form, Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Form, Button, Table } from "react-bootstrap";
 import { useState } from "react";
 import DeviceForm from "./DeviceForm";
 import LocationForm from "./LocationForm";
-import { BsTrash } from "react-icons/bs";
+import LocationsTable from "./LocationsTable";
+import DevicesTable from "./DevicesTable";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
 
 export default function Browser() {
   const [addDeviceModalShow, setAddDeviceModalShow] = useState<boolean>(false);
   const [addLocationModalShow, setAddLocationModalShow] =
     useState<boolean>(false);
+  const { locations, devices } = useProjectAssets();
 
-  const { locations, setLocations } = useProjectAssets();
-
-  const handleDelete = (locationId: string) => {
-    setLocations(locations.filter((location) => location.id !== locationId));
-  };
   return (
     <div className="py-3 px-5">
       <h3 className="text-primary">Browse data</h3>
@@ -27,56 +24,17 @@ export default function Browser() {
         </Form.Group>
       </Form>
       <div className="d-flex justify-content-between gap-2 flex-wrap">
-        <div className="flex-grow-1 d-flex flex-column rounded border p-2 my-2">
+        <div
+          className="flex-grow-1 d-flex flex-column rounded border p-2 my-2"
+          style={{ minHeight: "10rem" }}
+        >
           <div className="d-flex justify-content-between">
             <div className="p-1 me-auto text-">Locations</div>
             <Button size="sm" onClick={() => setAddLocationModalShow(true)}>
               Create location
             </Button>
           </div>
-          {locations.length > 0 ? (
-            <Table
-              hover
-              size="sm"
-              className="my-1"
-              style={{ verticalAlign: "middle" }}
-            >
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Area</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {locations.map((location) => {
-                  return (
-                    <tr key={location.id}>
-                      <OverlayTrigger
-                        placement="left"
-                        delay={{ show: 250, hide: 100 }}
-                        overlay={<Tooltip>{location.details}</Tooltip>}
-                      >
-                        <td>{location.name}</td>
-                      </OverlayTrigger>
-                      <td>{location.area}</td>
-                      <td className="text-end">
-                        <Button
-                          size="sm"
-                          variant="outline-danger"
-                          onClick={() => handleDelete(location.id)}
-                        >
-                          <BsTrash />
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          ) : (
-            <div className="m-auto">Create your first location...</div>
-          )}
+          <LocationsTable />
         </div>
         <div className="flex-grow-1 d-flex flex-column rounded border p-2 my-2">
           <div className="d-flex justify-content-between">
@@ -85,27 +43,7 @@ export default function Browser() {
               Add device
             </Button>
           </div>
-          <Table
-            hover
-            size="sm"
-            className="my-1"
-            style={{ verticalAlign: "middle" }}
-          >
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Location</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>A00001</td>
-                <td>Rozdzielnica główna</td>
-                <td>Maszynownia</td>
-              </tr>
-            </tbody>
-          </Table>
+          <DevicesTable />
         </div>
       </div>
       <div className="flex-grow-1 rounded border p-2 my-2">
@@ -114,6 +52,7 @@ export default function Browser() {
           <Button size="sm">Add connection</Button>
         </div>
         <Table
+          responsive
           hover
           size="sm"
           className="my-1"

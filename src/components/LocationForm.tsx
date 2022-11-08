@@ -12,23 +12,19 @@ export default function LocationForm({ show, hide }: LocationFormTypes) {
   const nameRef = useRef<HTMLInputElement | null>(null);
   const areaRef = useRef<HTMLInputElement | null>(null);
   const detailsRef = useRef<HTMLInputElement | null>(null);
-  const { locations, setLocations } = useProjectAssets();
+  const { locations, setLocations, pushAlert } = useProjectAssets();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      nameRef.current?.value &&
-      areaRef.current?.value &&
-      detailsRef.current?.value
-    ) {
+    if (nameRef.current?.value && areaRef.current?.value) {
       const newLocation = {
         id: uuidv4(),
         name: nameRef.current.value,
         area: areaRef.current.value,
-        details: detailsRef.current.value,
+        details: detailsRef.current?.value || null,
       };
       setLocations([...locations, newLocation]);
-
+      pushAlert("success", `New location created!`);
       hide();
     }
   };

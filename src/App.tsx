@@ -1,10 +1,10 @@
-import DeviceForm from "./components/DeviceForm";
-import LocationForm from "./components/LocationForm";
 import Browser from "./components/Browser";
+import Alerts from "./contexts/Alerts";
 
 function App() {
   return (
-    <div className="container d-flex flex-column mt-3 ">
+    <div className="d-relative container d-flex flex-column mt-3 ">
+      <Alerts />
       <Browser />
     </div>
   );
