@@ -67,6 +67,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
                   ref={nameRef}
                   type="text"
                   placeholder="Enter connection name..."
+                  required
                 />
               </Form.Group>
               <Form.Group className="flex-grow-1">
@@ -105,7 +106,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
                     })}
                 </Form.Select>
               </Form.Group>
-              <Form.Group className="flex-grow-1" style={{ minWidth: "75%" }}>
+              <Form.Group className="flex-grow-1" style={{ minWidth: "80%" }}>
                 <Form.Label>Select device:</Form.Label>
                 <Form.Select
                   onChange={(e) => (device2Ref.current = e.target?.value)}
@@ -140,6 +141,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
                     ref={lengthRef}
                     type="number"
                     placeholder="Enter connection length..."
+                    required
                   />
                   <InputGroup.Text>m</InputGroup.Text>
                 </InputGroup>

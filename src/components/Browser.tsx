@@ -61,7 +61,7 @@ export default function Browser() {
           <div className="p-1 me-auto">Connections</div>
           <Button
             size="sm"
-            disabled={devices.length < 2}
+            disabled={devices.length < 1}
             onClick={() => setAddConnectionModalShow(true)}
           >
             Add connection

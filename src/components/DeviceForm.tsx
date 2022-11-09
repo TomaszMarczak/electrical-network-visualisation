@@ -18,18 +18,14 @@ export default function DeviceForm({ show, hide }: ModalFormTypes) {
   const { locations, devices, setDevices, pushAlert } = useProjectAssets();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (
-      givenIdRef.current?.value &&
-      nameRef.current?.value &&
-      weightRef.current?.value
-    ) {
+    if (givenIdRef.current?.value && nameRef.current?.value) {
       const newDevice = {
         id: uuidv4(),
         givenId: givenIdRef.current.value,
-        name: nameRef.current.value,
+        name: nameRef.current?.value,
         location: locationRef.current,
         details: detailsRef.current?.value || null,
-        weight: parseInt(weightRef.current.value),
+        weight: parseInt(weightRef.current?.value || "0"),
       };
       setDevices([...devices, newDevice]);
       pushAlert("success", `New device created!`);
@@ -61,6 +57,7 @@ export default function DeviceForm({ show, hide }: ModalFormTypes) {
                   ref={givenIdRef}
                   type="text"
                   placeholder="Enter device ID..."
+                  required
                 />
                 <Form.Text>Must be unique!</Form.Text>
               </Form.Group>
@@ -70,6 +67,7 @@ export default function DeviceForm({ show, hide }: ModalFormTypes) {
                   ref={nameRef}
                   type="text"
                   placeholder="Enter device name..."
+                  required
                 />
               </Form.Group>
               <Form.Group className="flex-grow-1" style={{ minWidth: "75%" }}>

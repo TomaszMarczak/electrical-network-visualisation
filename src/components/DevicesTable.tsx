@@ -3,9 +3,22 @@ import { BsTrash } from "react-icons/bs";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
 
 export default function DevicesTable() {
-  const { devices, setDevices, locations, pushAlert } = useProjectAssets();
+  const {
+    devices,
+    connections,
+    setConnections,
+    setDevices,
+    locations,
+    pushAlert,
+  } = useProjectAssets();
 
   const handleDelete = (deviceId: string) => {
+    setConnections(
+      connections.filter(
+        (connection) =>
+          connection.device1 !== deviceId && connection.device2 !== deviceId
+      )
+    );
     setDevices(devices.filter((device) => device.id !== deviceId));
   };
   return (
