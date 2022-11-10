@@ -8,26 +8,70 @@ type Link = {
   name: string;
   nodePairId?: string;
   linkCurvature?: number;
+  width?: number;
 };
 
 export default function GraphCanvas() {
+  let selfLoopLinks: { [key: string]: Link[] } = {};
+  let sameNodesLinks: { [key: string]: Link[] } = {};
+  let maxExistingWidth: number = 0;
+  const linkCurvatureMinMax = 0.5;
+  const maxLinkWidth = 6;
+
   const { connections, devices, locations } = useProjectAssets();
-  const nodes = devices.map((device) => ({ id: device.id, name: device.name }));
-  const links = connections.map((connection) => ({
-    source: connection.device1,
-    target: connection.device2,
-    name: connection.name,
-    nodePairId: "",
+  const nodes = devices.map((device) => ({
+    id: device.id,
+    name: device.name,
+    location: device.location,
   }));
+  const links = connections
+    .sort((a, b) => {
+      let valA =
+        Math.round(
+          a.cable
+            .replaceAll(",", ".")
+            .split("x")
+            .reduce((total, current) => total * parseFloat(current), 1) * 100
+        ) / 100;
+      let valB =
+        Math.round(
+          b.cable
+            .replaceAll(",", ".")
+            .split("x")
+            .reduce((total, current) => total * parseFloat(current), 1) * 100
+        ) / 100;
+
+      const maxVal = Math.max(valA, valB);
+      if (maxVal > maxExistingWidth) maxExistingWidth = maxVal;
+      return valA - valB;
+    })
+    .map((connection) => {
+      let calculatedWidth =
+        ((Math.round(
+          connection.cable
+            .replaceAll(",", ".")
+            .split("x")
+            .reduce((total, current) => total * parseFloat(current), 1) * 100
+        ) /
+          100) *
+          maxLinkWidth) /
+        maxExistingWidth;
+      calculatedWidth;
+
+      if (calculatedWidth < 1) calculatedWidth = 1;
+      return {
+        source: connection.device1,
+        target: connection.device2,
+        name: connection.cable,
+        nodePairId: "",
+        width: calculatedWidth,
+      };
+    });
 
   const gData = {
     nodes: nodes,
     links: links,
   };
-
-  let selfLoopLinks: { [key: string]: Link[] } = {};
-  let sameNodesLinks: { [key: string]: Link[] } = {};
-  const linkCurvatureMinMax = 0.5;
 
   // 1. assign each link a nodePairId that combines their source and target independent of the links direction
   // 2. group links together that share the gitsame two nodes or are self-loops
@@ -71,12 +115,12 @@ export default function GraphCanvas() {
       }
     });
 
-  console.log(sameNodesLinks);
-
   return (
     <ForceGraph2D
       graphData={gData}
       linkCurvature="linkCurvature"
+      nodeAutoColorBy="location"
+      linkWidth="width"
       width={1000}
       enableZoomInteraction={false}
     />
