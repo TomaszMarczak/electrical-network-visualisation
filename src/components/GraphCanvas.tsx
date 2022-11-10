@@ -7,7 +7,7 @@ type Link = {
   target: string;
   name: string;
   nodePairId?: string;
-  curvature?: number;
+  linkCurvature?: number;
 };
 
 export default function GraphCanvas() {
@@ -27,10 +27,10 @@ export default function GraphCanvas() {
 
   let selfLoopLinks: { [key: string]: Link[] } = {};
   let sameNodesLinks: { [key: string]: Link[] } = {};
-  const curvatureMinMax = 0.5;
+  const linkCurvatureMinMax = 0.5;
 
   // 1. assign each link a nodePairId that combines their source and target independent of the links direction
-  // 2. group links together that share the same two nodes or are self-loops
+  // 2. group links together that share the gitsame two nodes or are self-loops
   gData.links.forEach((link) => {
     link.nodePairId =
       link.source <= link.target
@@ -43,37 +43,40 @@ export default function GraphCanvas() {
     map[link.nodePairId].push(link);
   });
 
-  // Compute the curvature for self-loop links to avoid overlaps
+  // Compute the linkCurvature for self-loop links to avoid overlaps
   Object.keys(selfLoopLinks).forEach((id) => {
     let links = selfLoopLinks[id];
     let lastIndex = links.length - 1;
-    links[lastIndex].curvature = 1;
-    let delta = (1 - curvatureMinMax) / lastIndex;
+    links[lastIndex].linkCurvature = 1;
+    let delta = (1 - linkCurvatureMinMax) / lastIndex;
     for (let i = 0; i < lastIndex; i++) {
-      links[i].curvature = curvatureMinMax + i * delta;
+      links[i].linkCurvature = linkCurvatureMinMax + i * delta;
     }
   });
 
-  // Compute the curvature for links sharing the same two nodes to avoid overlaps
+  // Compute the linkCurvature for links sharing the same two nodes to avoid overlaps
   Object.keys(sameNodesLinks)
     .filter((nodePairId) => sameNodesLinks[nodePairId].length > 1)
     .forEach((nodePairId) => {
       let links = sameNodesLinks[nodePairId];
       let lastIndex = links.length - 1;
       let lastLink = links[lastIndex];
-      lastLink.curvature = curvatureMinMax;
-      let delta = (2 * curvatureMinMax) / lastIndex;
+      lastLink.linkCurvature = linkCurvatureMinMax;
+      let delta = (2 * linkCurvatureMinMax) / lastIndex;
       for (let i = 0; i < lastIndex; i++) {
-        (links[i].curvature as number) = -curvatureMinMax + i * delta;
+        (links[i].linkCurvature as number) = -linkCurvatureMinMax + i * delta;
         if (lastLink.source !== links[i].source) {
-          links[i].curvature = (links[i].curvature as number) * -1; // flip it around, otherwise they overlap
+          links[i].linkCurvature = (links[i].linkCurvature as number) * -1; // flip it around, otherwise they overlap
         }
       }
     });
 
+  console.log(sameNodesLinks);
+
   return (
     <ForceGraph2D
       graphData={gData}
+      linkCurvature="linkCurvature"
       width={1000}
       enableZoomInteraction={false}
     />
