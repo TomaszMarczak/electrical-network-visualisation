@@ -15,7 +15,13 @@ export default function Browser() {
   const [addConnectionModalShow, setAddConnectionModalShow] =
     useState<boolean>(false);
 
-  const { locations, devices, addRandomLocation } = useProjectAssets();
+  const {
+    locations,
+    devices,
+    addRandomLocation,
+    addRandomDevice,
+    addRandomConnection,
+  } = useProjectAssets();
 
   return (
     <div className="py-3 px-5">
@@ -31,10 +37,14 @@ export default function Browser() {
       <div className="d-flex justify-content-between gap-2 flex-wrap">
         <div
           className="flex-grow-1 d-flex flex-column rounded border p-2 my-2"
-          style={{ minHeight: "10rem" }}
+          style={{
+            minHeight: "10rem",
+            maxHeight: "20rem",
+            overflow: "auto",
+          }}
         >
           <div className="d-flex justify-content-between">
-            <div className="p-1 me-auto text-">Locations</div>
+            <div className="p-1 me-auto">Locations</div>
             <Button size="sm" onClick={() => setAddLocationModalShow(true)}>
               Create location
             </Button>
@@ -49,11 +59,26 @@ export default function Browser() {
           </div>
           <LocationsTable />
         </div>
-        <div className="flex-grow-1 d-flex flex-column rounded border p-2 my-2 ">
+        <div
+          className="flex-grow-1 d-flex flex-column rounded border p-2 my-2 "
+          style={{
+            minHeight: "10rem",
+            maxHeight: "20rem",
+            overflow: "auto",
+          }}
+        >
           <div className="d-flex justify-content-between">
             <div className="p-1 me-auto">Devices</div>
             <Button size="sm" onClick={() => setAddDeviceModalShow(true)}>
               Add device
+            </Button>
+            <Button
+              className="ms-1"
+              size="sm"
+              onClick={addRandomDevice}
+              variant="outline-secondary"
+            >
+              Random
             </Button>
           </div>
           <DevicesTable />
@@ -63,7 +88,11 @@ export default function Browser() {
         className={`flex-grow-1 d-flex flex-column rounded border p-2 my-2 ${
           devices.length < 1 ? "text-muted bg-light" : ""
         }`}
-        style={{ minHeight: "10rem" }}
+        style={{
+          minHeight: "10rem",
+          maxHeight: "20rem",
+          overflow: "auto",
+        }}
       >
         <div className="d-flex justify-content-between">
           <div className="p-1 me-auto">Connections</div>
@@ -73,6 +102,14 @@ export default function Browser() {
             onClick={() => setAddConnectionModalShow(true)}
           >
             Add connection
+          </Button>
+          <Button
+            className="ms-1"
+            size="sm"
+            onClick={addRandomConnection}
+            variant="outline-secondary"
+          >
+            Random
           </Button>
         </div>
         <ConnectionsTable />
