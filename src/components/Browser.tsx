@@ -15,7 +15,7 @@ export default function Browser() {
   const [addConnectionModalShow, setAddConnectionModalShow] =
     useState<boolean>(false);
 
-  const { locations, devices } = useProjectAssets();
+  const { locations, devices, addRandomLocation } = useProjectAssets();
 
   return (
     <div className="py-3 px-5">
@@ -37,6 +37,14 @@ export default function Browser() {
             <div className="p-1 me-auto text-">Locations</div>
             <Button size="sm" onClick={() => setAddLocationModalShow(true)}>
               Create location
+            </Button>
+            <Button
+              className="ms-1"
+              size="sm"
+              onClick={addRandomLocation}
+              variant="outline-secondary"
+            >
+              Random
             </Button>
           </div>
           <LocationsTable />

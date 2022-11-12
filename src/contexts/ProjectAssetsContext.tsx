@@ -1,4 +1,10 @@
-import { useContext, ReactNode, createContext, useState, useRef } from "react";
+import React, {
+  useContext,
+  ReactNode,
+  createContext,
+  useState,
+  useRef,
+} from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import {
   DeviceObjectType,
@@ -6,6 +12,7 @@ import {
   AlertObjectType,
   ConnectionObjectType,
 } from "./appTypes";
+import { v4 as uuidv4 } from "uuid";
 
 type ProjectAssetsContextType = {
   locations: LocationObjectType[];
@@ -16,6 +23,7 @@ type ProjectAssetsContextType = {
   pushAlert: (variant: string, message: string) => void;
   connections: ConnectionObjectType[];
   setConnections: (value: ConnectionObjectType[]) => void;
+  addRandomLocation: () => void;
 };
 
 const ProjectAssetsContext = createContext({} as ProjectAssetsContextType);
@@ -58,6 +66,17 @@ export const ProjectAssetsProvider = ({
     setAlerts(() => [...alerts, newAlert]);
   };
 
+  const addRandomLocation = () => {
+    const newLocation = {
+      id: uuidv4(),
+      name: `Room ${Math.floor(Math.random() * (200 - 1 + 1) + 1)}`,
+      area: `Floor ${Math.floor(Math.random() * (6 + 2 + 1) - 2)}`,
+      details: null,
+    };
+    setLocations([...locations, newLocation]);
+    pushAlert("success", `New location created!`);
+  };
+
   return (
     <ProjectAssetsContext.Provider
       value={{
@@ -69,6 +88,7 @@ export const ProjectAssetsProvider = ({
         pushAlert,
         connections,
         setConnections,
+        addRandomLocation,
       }}
     >
       {children}
