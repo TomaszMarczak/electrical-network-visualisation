@@ -28,7 +28,10 @@ export default function DevicesTable() {
           hover
           size="sm"
           className="my-1"
-          style={{ verticalAlign: "middle" }}
+          responsive
+          style={{
+            verticalAlign: "middle",
+          }}
         >
           <thead>
             <tr>

@@ -1,6 +1,7 @@
 import ForceGraph2D from "react-force-graph-2d";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
-import { useState, useEffect, useRef } from "react";
+import { memo } from "react";
+import { ConnectionObjectType, DeviceObjectType } from "../contexts/appTypes";
 
 type Link = {
   source: string;
@@ -11,14 +12,19 @@ type Link = {
   width?: number;
 };
 
-export default function GraphCanvas() {
+function GraphCanvas({
+  connections,
+  devices,
+}: {
+  connections: ConnectionObjectType[];
+  devices: DeviceObjectType[];
+}) {
   let selfLoopLinks: { [key: string]: Link[] } = {};
   let sameNodesLinks: { [key: string]: Link[] } = {};
   let maxExistingWidth: number = 0;
   const linkCurvatureMinMax = 0.5;
   const maxLinkWidth = 6;
 
-  const { connections, devices, locations } = useProjectAssets();
   const nodes = devices.map((device) => ({
     id: device.id,
     name: device.name,
@@ -126,3 +132,5 @@ export default function GraphCanvas() {
     />
   );
 }
+
+export default memo(GraphCanvas);
