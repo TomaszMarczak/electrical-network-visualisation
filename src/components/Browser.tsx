@@ -1,11 +1,11 @@
 import { Form, Button, Table } from "react-bootstrap";
 import { useState } from "react";
-import DeviceForm from "./DeviceForm";
-import LocationForm from "./LocationForm";
-import ConnectionForm from "./ConnectionForm";
-import LocationsTable from "./LocationsTable";
-import DevicesTable from "./DevicesTable";
-import ConnectionsTable from "./ConnectionsTable";
+import DeviceForm from "./devices/DeviceForm";
+import LocationForm from "./locations/LocationForm";
+import ConnectionForm from "./connections/ConnectionForm";
+import LocationsTable from "./locations/LocationsTable";
+import DevicesTable from "./devices/DevicesTable";
+import ConnectionsTable from "./connections/ConnectionsTable";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
 
 export default function Browser() {

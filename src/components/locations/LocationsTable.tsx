@@ -1,6 +1,6 @@
 import { Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { BsPencilFill, BsTrash } from "react-icons/bs";
-import { useProjectAssets } from "../contexts/ProjectAssetsContext";
+import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 import { useState } from "react";
 import EditLocationForm from "./EditLocationForm";
 

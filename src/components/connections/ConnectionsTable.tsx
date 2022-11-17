@@ -1,6 +1,6 @@
 import { Button, Table, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { BsTrash } from "react-icons/bs";
-import { useProjectAssets } from "../contexts/ProjectAssetsContext";
+import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 
 export default function ConnectionsTable() {
   const { locations, devices, pushAlert, connections, setConnections } =

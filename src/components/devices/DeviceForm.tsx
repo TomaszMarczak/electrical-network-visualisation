@@ -1,6 +1,6 @@
 import { Form, Button, Modal, InputGroup } from "react-bootstrap";
 import { useRef } from "react";
-import { useProjectAssets } from "../contexts/ProjectAssetsContext";
+import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 import { v4 as uuidv4 } from "uuid";
 
 type ModalFormTypes = {

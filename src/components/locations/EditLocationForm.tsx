@@ -1,30 +1,42 @@
 import { Form, Button, Modal } from "react-bootstrap";
 import { useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useProjectAssets } from "../contexts/ProjectAssetsContext";
+import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 
-type ModalFormTypes = {
+type EditModalFormTypes = {
   show: boolean;
   hide: () => void;
+  id: string;
 };
 
-export default function LocationForm({ show, hide }: ModalFormTypes) {
+export default function EditLocationForm({
+  show,
+  hide,
+  id,
+}: EditModalFormTypes) {
+  const { locations, setLocations, pushAlert } = useProjectAssets();
+  const location = locations.find((location) => location.id === id);
   const nameRef = useRef<HTMLInputElement | null>(null);
   const areaRef = useRef<HTMLInputElement | null>(null);
   const detailsRef = useRef<HTMLInputElement | null>(null);
-  const { locations, setLocations, pushAlert } = useProjectAssets();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (nameRef.current?.value && areaRef.current?.value) {
-      const newLocation = {
-        id: uuidv4(),
+    if (location?.id && nameRef.current?.value && areaRef.current?.value) {
+      const editedLocation = {
+        id: location.id,
         name: nameRef.current.value,
         area: areaRef.current.value,
         details: detailsRef.current?.value || null,
       };
-      setLocations([...locations, newLocation]);
-      pushAlert("success", `New location created!`);
+      setLocations(
+        locations.map((prevLocation) => {
+          if (prevLocation.id !== editedLocation.id) return prevLocation;
+          else return editedLocation;
+        })
+      );
+
+      pushAlert("success", `Location edited!`);
       hide();
     }
   };
@@ -34,11 +46,11 @@ export default function LocationForm({ show, hide }: ModalFormTypes) {
       show={show}
       onHide={hide}
       size="lg"
-      aria-labelledby="Modal Add Location"
+      aria-labelledby="Modal Edit Location"
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="Modal Add Device">Create location</Modal.Title>
+        <Modal.Title id="Modal Add Device">Edit location</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="d-flex flex-column p-3 p-3">
@@ -50,6 +62,7 @@ export default function LocationForm({ show, hide }: ModalFormTypes) {
               <Form.Group className="flex-grow-1">
                 <Form.Label>Location name:</Form.Label>
                 <Form.Control
+                  defaultValue={location?.name}
                   ref={nameRef}
                   type="text"
                   placeholder="Enter location name..."
@@ -58,6 +71,7 @@ export default function LocationForm({ show, hide }: ModalFormTypes) {
               <Form.Group className="flex-grow-1">
                 <Form.Label>Area name:</Form.Label>
                 <Form.Control
+                  defaultValue={location?.area}
                   ref={areaRef}
                   type="text"
                   placeholder="Floor, deck, zone, etc..."
@@ -66,6 +80,7 @@ export default function LocationForm({ show, hide }: ModalFormTypes) {
               <Form.Group className="w-75">
                 <Form.Label>Details:</Form.Label>
                 <Form.Control
+                  defaultValue={location?.details || ""}
                   ref={detailsRef}
                   type="text"
                   placeholder="More details about your location..."
@@ -73,7 +88,7 @@ export default function LocationForm({ show, hide }: ModalFormTypes) {
               </Form.Group>
 
               <Button type="submit" className="ms-auto mt-auto">
-                Add location
+                Edit location
               </Button>
             </div>
           </Form>
