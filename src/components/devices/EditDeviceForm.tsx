@@ -1,7 +1,6 @@
 import { Form, Button, Modal, InputGroup } from "react-bootstrap";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
-import { v4 as uuidv4 } from "uuid";
 
 type ModalFormTypes = {
   show: boolean;
@@ -17,6 +16,12 @@ export default function EditDeviceForm({ show, hide, id }: ModalFormTypes) {
   const locationRef = useRef<string>("not specified");
   const detailsRef = useRef<HTMLInputElement | null>(null);
   const weightRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (show && device) {
+      locationRef.current = device.location;
+    }
+  }, [show]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

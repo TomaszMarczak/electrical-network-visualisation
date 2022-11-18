@@ -1,26 +1,36 @@
 import { Form, Button, Modal, InputGroup } from "react-bootstrap";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
-import { v4 as uuidv4 } from "uuid";
 
 type ModalFormTypes = {
   show: boolean;
   hide: () => void;
+  id: string;
 };
 
-export default function ConnectionForm({ show, hide }: ModalFormTypes) {
+export default function EditConnectionForm({ show, hide, id }: ModalFormTypes) {
+  const { locations, devices, setConnections, connections, pushAlert } =
+    useProjectAssets();
+  const connection = connections.find((connection) => connection.id === id);
   const nameRef = useRef<HTMLInputElement | null>(null);
   const cableRef = useRef<HTMLInputElement | null>(null);
   const device1Ref = useRef<string | null>(null);
   const device2Ref = useRef<string | null>(null);
   const lengthRef = useRef<HTMLInputElement | null>(null);
   const statusRef = useRef<string>("not ready");
-  const { locations, devices, setConnections, connections, pushAlert } =
-    useProjectAssets();
+
+  useEffect(() => {
+    if (show && connection) {
+      device1Ref.current = connection?.device1;
+      device2Ref.current = connection?.device2;
+      statusRef.current = connection?.status;
+    }
+  }, [show]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (
+      connection?.id &&
       nameRef.current?.value &&
       cableRef.current?.value &&
       device1Ref.current &&
@@ -28,8 +38,8 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
       lengthRef.current?.value &&
       statusRef.current
     ) {
-      const newConnection = {
-        id: uuidv4(),
+      const editedConnection = {
+        id: connection.id,
         name: nameRef.current.value,
         cable: cableRef.current.value,
         device1: device1Ref.current,
@@ -37,8 +47,13 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
         length: parseInt(lengthRef.current.value),
         status: statusRef.current,
       };
-      setConnections([...connections, newConnection]);
-      pushAlert("success", `New connection created!`);
+      setConnections(
+        connections.map((prevConnection) => {
+          if (prevConnection.id !== editedConnection.id) return prevConnection;
+          else return editedConnection;
+        })
+      );
+      pushAlert("success", `Connection edited!`);
       hide();
     }
   };
@@ -48,11 +63,11 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
       show={show}
       onHide={hide}
       size="lg"
-      aria-labelledby="Modal Add Device"
+      aria-labelledby="Modal Edit Connection"
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="Modal Add Device">Add device</Modal.Title>
+        <Modal.Title id="Modal Edit Connection">Edit connection</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="d-flex flex-column p-3 p-3">
@@ -64,6 +79,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
               <Form.Group>
                 <Form.Label>Connection name:</Form.Label>
                 <Form.Control
+                  defaultValue={connection?.name}
                   ref={nameRef}
                   type="text"
                   placeholder="Enter connection name..."
@@ -73,6 +89,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
               <Form.Group className="flex-grow-1">
                 <Form.Label>Cable:</Form.Label>
                 <Form.Control
+                  defaultValue={connection?.cable}
                   ref={cableRef}
                   type="text"
                   placeholder="Enter cable type..."
@@ -84,6 +101,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
                   onChange={(e) => (device1Ref.current = e.target?.value)}
                   aria-label="Select first device"
                   className=""
+                  defaultValue={connection?.device1}
                 >
                   <option value="" hidden>
                     Choose device...
@@ -109,6 +127,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
               <Form.Group className="flex-grow-1" style={{ minWidth: "80%" }}>
                 <Form.Label>Select device:</Form.Label>
                 <Form.Select
+                  defaultValue={connection?.device2}
                   onChange={(e) => (device2Ref.current = e.target?.value)}
                   aria-label="Select second device"
                   className=""
@@ -138,6 +157,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
                 <Form.Label>Length:</Form.Label>
                 <InputGroup>
                   <Form.Control
+                    defaultValue={connection?.length}
                     ref={lengthRef}
                     type="number"
                     placeholder="Enter connection length..."
@@ -149,6 +169,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
               <Form.Group className="flex-grow-1" style={{ minWidth: "30%" }}>
                 <Form.Label>Connection status:</Form.Label>
                 <Form.Select
+                  defaultValue={connection?.status}
                   onChange={(e) => (statusRef.current = e.target?.value)}
                   aria-label="Select connection status..."
                   className=""
@@ -160,7 +181,7 @@ export default function ConnectionForm({ show, hide }: ModalFormTypes) {
                 </Form.Select>
               </Form.Group>
               <Button type="submit" className="ms-auto mt-auto">
-                Add device
+                Edit device
               </Button>
             </div>
           </Form>
