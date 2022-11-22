@@ -14,6 +14,7 @@ export default function Browser() {
     useState<boolean>(false);
   const [addConnectionModalShow, setAddConnectionModalShow] =
     useState<boolean>(false);
+  const [filterValue, setFilterValue] = useState<string>("");
 
   const {
     locations,
@@ -31,6 +32,8 @@ export default function Browser() {
           <Form.Control
             type="text"
             placeholder="Search by name, ID, location, etc..."
+            value={filterValue}
+            onChange={(e) => setFilterValue(e.target.value)}
           />
         </Form.Group>
       </Form>
@@ -57,7 +60,7 @@ export default function Browser() {
               Random
             </Button>
           </div>
-          <LocationsTable />
+          <LocationsTable filterValue={filterValue} />
         </div>
         <div
           className="flex-grow-1 d-flex flex-column rounded border p-2 my-2 "
@@ -81,7 +84,7 @@ export default function Browser() {
               Random
             </Button>
           </div>
-          <DevicesTable />
+          <DevicesTable filterValue={filterValue} />
         </div>
       </div>
       <div

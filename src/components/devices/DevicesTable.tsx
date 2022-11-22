@@ -3,7 +3,17 @@ import { BsPencilFill, BsTrash } from "react-icons/bs";
 import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 import { useState } from "react";
 import EditDeviceForm from "./EditDeviceForm";
-export default function DevicesTable() {
+import {
+  ConnectionObjectType,
+  DeviceObjectType,
+  LocationObjectType,
+} from "../../contexts/appTypes";
+
+type DevicesTableTypes = {
+  filterValue: string;
+};
+
+export default function DevicesTable({ filterValue }: DevicesTableTypes) {
   const {
     devices,
     connections,
@@ -24,9 +34,44 @@ export default function DevicesTable() {
     );
     setDevices(devices.filter((device) => device.id !== deviceId));
   };
+
+  const populatedDevices = devices.map((device) => {
+    const deviceLocation =
+      locations.find((location) => device.location === location.id) ||
+      "not specified";
+    return { ...device, location: deviceLocation };
+  });
+
+  const checkObject = (
+    object: DeviceObjectType | ConnectionObjectType | LocationObjectType,
+    filterValue: string
+  ): boolean => {
+    let flag = false;
+    Object.entries(object).forEach(([key, value]) => {
+      if (value && typeof value === "object") {
+        if (checkObject(value, filterValue) === true) flag = true;
+      }
+      if (
+        key !== "id" && //do not search in id's
+        key !== "weight" && //do not search in weights
+        key !== "details" && //do not search in details
+        value !== "object" && // objects are ommited
+        value?.toString().toLowerCase().match(filterValue.toLowerCase()) //check if value contains filterValue
+      )
+        flag = true;
+    });
+    return flag;
+  };
+
+  const filtered = populatedDevices.filter((device) => {
+    if (filterValue.length > 0) {
+      return checkObject(device, filterValue);
+    } else return true;
+  });
+
   return (
     <>
-      {devices.length > 0 ? (
+      {filtered.length > 0 ? (
         <>
           <Table
             hover
@@ -46,10 +91,7 @@ export default function DevicesTable() {
               </tr>
             </thead>
             <tbody>
-              {devices.map((device) => {
-                const deviceLocation = locations.find(
-                  (location) => location.id === device.location
-                );
+              {filtered.map((device) => {
                 return (
                   <tr key={device.id}>
                     <td>{device.givenId}</td>
@@ -70,16 +112,16 @@ export default function DevicesTable() {
                       placement="top"
                       delay={{ show: 400, hide: 100 }}
                       overlay={
-                        deviceLocation ? (
-                          <Tooltip>{deviceLocation.area}</Tooltip>
+                        typeof device.location === "object" ? (
+                          <Tooltip>{device.location.area}</Tooltip>
                         ) : (
                           <></>
                         )
                       }
                     >
                       <td>
-                        {deviceLocation
-                          ? `${deviceLocation.area} | ${deviceLocation.name}`
+                        {typeof device.location === "object"
+                          ? `${device.location.area} | ${device.location.name}`
                           : "Not specified"}
                       </td>
                     </OverlayTrigger>
@@ -117,7 +159,7 @@ export default function DevicesTable() {
           />
         </>
       ) : (
-        <div className="m-auto">Create your first device...</div>
+        <div className="m-auto">No devices to display...</div>
       )}
     </>
   );
