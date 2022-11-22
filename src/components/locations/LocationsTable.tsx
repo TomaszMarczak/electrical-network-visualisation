@@ -4,7 +4,10 @@ import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 import { useState } from "react";
 import EditLocationForm from "./EditLocationForm";
 
-export default function LocationsTable() {
+type LocationsTableType = {
+  filterValue: string;
+};
+export default function LocationsTable({ filterValue }: LocationsTableType) {
   const { locations, setLocations, pushAlert } = useProjectAssets();
   const [editLocationModalShow, setEditLocationModalShow] =
     useState<string>("");
@@ -13,9 +16,23 @@ export default function LocationsTable() {
     setLocations(locations.filter((location) => location.id !== locationId));
   };
 
+  const filtered = locations.filter((location) => {
+    if (filterValue.length > 0) {
+      let flag = false;
+      Object.entries(location).forEach(([key, value]) => {
+        if (
+          key !== "id" && //do not search in id's
+          value?.toString().toLowerCase().match(filterValue.toLowerCase()) //check if value contains filterValue
+        )
+          flag = true;
+      });
+      return flag;
+    } else return true;
+  });
+
   return (
     <>
-      {locations.length > 0 ? (
+      {filtered.length > 0 ? (
         <>
           <Table
             hover
@@ -34,7 +51,7 @@ export default function LocationsTable() {
               </tr>
             </thead>
             <tbody>
-              {locations.map((location) => {
+              {filtered.map((location) => {
                 return (
                   <tr key={location.id}>
                     <OverlayTrigger
@@ -85,7 +102,7 @@ export default function LocationsTable() {
           />
         </>
       ) : (
-        <div className="m-auto">Create your first location...</div>
+        <div className="m-auto">No locations to display...</div>
       )}
     </>
   );
