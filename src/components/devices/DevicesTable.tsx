@@ -3,11 +3,7 @@ import { BsPencilFill, BsTrash } from "react-icons/bs";
 import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 import { useState } from "react";
 import EditDeviceForm from "./EditDeviceForm";
-import {
-  ConnectionObjectType,
-  DeviceObjectType,
-  LocationObjectType,
-} from "../../contexts/appTypes";
+import { checkObject } from "../../utils/helperFunctions";
 
 type DevicesTableTypes = {
   filterValue: string;
@@ -41,27 +37,6 @@ export default function DevicesTable({ filterValue }: DevicesTableTypes) {
       "not specified";
     return { ...device, location: deviceLocation };
   });
-
-  const checkObject = (
-    object: DeviceObjectType | ConnectionObjectType | LocationObjectType,
-    filterValue: string
-  ): boolean => {
-    let flag = false;
-    Object.entries(object).forEach(([key, value]) => {
-      if (value && typeof value === "object") {
-        if (checkObject(value, filterValue) === true) flag = true;
-      }
-      if (
-        key !== "id" && //do not search in id's
-        key !== "weight" && //do not search in weights
-        key !== "details" && //do not search in details
-        value !== "object" && // objects are ommited
-        value?.toString().toLowerCase().match(filterValue.toLowerCase()) //check if value contains filterValue
-      )
-        flag = true;
-    });
-    return flag;
-  };
 
   const filtered = populatedDevices.filter((device) => {
     if (filterValue.length > 0) {

@@ -3,7 +3,14 @@ import { BsPencilFill, BsTrash } from "react-icons/bs";
 import { useProjectAssets } from "../../contexts/ProjectAssetsContext";
 import { useState } from "react";
 import EditConnectionForm from "./EditConnectionForm";
-export default function ConnectionsTable() {
+import { checkObject } from "../../utils/helperFunctions";
+
+type ConnectionsTableTypes = {
+  filterValue: string;
+};
+export default function ConnectionsTable({
+  filterValue,
+}: ConnectionsTableTypes) {
   const { locations, devices, pushAlert, connections, setConnections } =
     useProjectAssets();
   const [editConnectionModalShow, setEditConnectionModalShow] =
@@ -14,9 +21,34 @@ export default function ConnectionsTable() {
       connections.filter((connection) => connection.id !== connectionId)
     );
   };
+
+  const populatedConnections = connections.map((connection) => {
+    let device1 = JSON.parse(
+      JSON.stringify(devices.find((device) => device.id == connection.device1)) // creating deep copy of device1
+    );
+    let device2 = JSON.parse(
+      JSON.stringify(devices.find((device) => device.id == connection.device2)) // creating deep copy of device2
+    );
+    let device1Location =
+      locations.find((location) => device1!.location === location.id) ||
+      "not specified";
+    let device2Location =
+      locations.find((location) => device2!.location === location.id) ||
+      "not specified";
+    device1.location = device1Location;
+    device2.location = device2Location;
+    return { ...connection, device1, device2 };
+  });
+
+  const filtered = populatedConnections.filter((connection) => {
+    if (filterValue.length > 0) {
+      return checkObject(connection, filterValue);
+    } else return true;
+  });
+
   return (
     <>
-      {devices.length > 0 ? (
+      {filtered.length > 0 ? (
         <>
           <Table
             responsive
@@ -36,20 +68,13 @@ export default function ConnectionsTable() {
               </tr>
             </thead>
             <tbody>
-              {connections.map((connection) => {
-                const device1 = devices.find(
-                  (device) => device.id === connection.device1
-                );
-                const device2 = devices.find(
-                  (device) => device.id === connection.device2
-                );
-
+              {filtered.map((connection) => {
                 return (
                   <tr key={connection.id}>
                     <td>{connection.name}</td>
                     <td>{connection.cable}</td>
-                    <td>{device1?.name}</td>
-                    <td>{device2?.name}</td>
+                    <td>{connection.device1?.name}</td>
+                    <td>{connection.device2?.name}</td>
                     <td>{connection.length}</td>
                     <td>{connection.status}</td>
                     <td className="text-end">
@@ -86,10 +111,7 @@ export default function ConnectionsTable() {
           />
         </>
       ) : (
-        <div className="m-auto flex">
-          Create your first{" "}
-          {devices ? "2 devices to create a connection" : "connection"}...
-        </div>
+        <div className="m-auto flex">No connections to display...</div>
       )}
     </>
   );

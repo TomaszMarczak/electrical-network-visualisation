@@ -115,7 +115,7 @@ export default function Browser() {
             Random
           </Button>
         </div>
-        <ConnectionsTable />
+        <ConnectionsTable filterValue={filterValue} />
       </div>
       <DeviceForm
         show={addDeviceModalShow}
