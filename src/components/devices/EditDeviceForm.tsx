@@ -19,7 +19,7 @@ export default function EditDeviceForm({ show, hide, id }: ModalFormTypes) {
 
   useEffect(() => {
     if (show && device) {
-      locationRef.current = device.location;
+      locationRef.current = device.location as string;
     }
   }, [show]);
 
@@ -87,7 +87,7 @@ export default function EditDeviceForm({ show, hide, id }: ModalFormTypes) {
               <Form.Group className="flex-grow-1" style={{ minWidth: "75%" }}>
                 <Form.Label>Select location:</Form.Label>
                 <Form.Select
-                  defaultValue={device?.location || "not specified"}
+                  defaultValue={(device?.location as string) || "not specified"}
                   onChange={(e) => (locationRef.current = e.target?.value)}
                   aria-label="Select area"
                   className=""

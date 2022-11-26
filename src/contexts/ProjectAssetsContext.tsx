@@ -1,17 +1,11 @@
-import React, {
-  useContext,
-  ReactNode,
-  createContext,
-  useState,
-  useRef,
-} from "react";
+import { useContext, ReactNode, createContext, useState, useRef } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import {
   DeviceObjectType,
   LocationObjectType,
   AlertObjectType,
   ConnectionObjectType,
-} from "./appTypes";
+} from "./Types";
 import { v4 as uuidv4 } from "uuid";
 
 type ProjectAssetsContextType = {

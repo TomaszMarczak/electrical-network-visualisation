@@ -2,7 +2,7 @@ import {
   DeviceObjectType,
   ConnectionObjectType,
   LocationObjectType,
-} from "../contexts/appTypes";
+} from "../contexts/Types";
 
 export const checkObject = (
   object: DeviceObjectType | ConnectionObjectType | LocationObjectType,
