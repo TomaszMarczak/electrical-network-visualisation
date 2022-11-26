@@ -69,6 +69,23 @@ export default function ConnectionsTable({
             </thead>
             <tbody>
               {filtered.map((connection) => {
+                let status;
+                switch (connection.status) {
+                  case "not ready":
+                    status = "Not ready";
+                    break;
+                  case "prepared":
+                    status = "Prepared";
+                    break;
+                  case "laid":
+                    status = "Laid";
+                    break;
+                  case "ready":
+                    status = "Ready";
+                    break;
+                  default:
+                    status = "Not ready";
+                }
                 return (
                   <tr key={connection.id}>
                     <td>{connection.name}</td>
@@ -76,7 +93,7 @@ export default function ConnectionsTable({
                     <td>{connection.device1?.name}</td>
                     <td>{connection.device2?.name}</td>
                     <td>{connection.length}</td>
-                    <td>{connection.status}</td>
+                    <td>{status}</td>
                     <td className="text-end">
                       <Button
                         size="sm"

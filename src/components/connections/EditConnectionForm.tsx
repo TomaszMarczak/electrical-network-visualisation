@@ -21,8 +21,8 @@ export default function EditConnectionForm({ show, hide, id }: ModalFormTypes) {
 
   useEffect(() => {
     if (show && connection) {
-      device1Ref.current = connection?.device1;
-      device2Ref.current = connection?.device2;
+      device1Ref.current = connection?.device1 as string;
+      device2Ref.current = connection?.device2 as string;
       statusRef.current = connection?.status;
     }
   }, [show]);
@@ -101,7 +101,7 @@ export default function EditConnectionForm({ show, hide, id }: ModalFormTypes) {
                   onChange={(e) => (device1Ref.current = e.target?.value)}
                   aria-label="Select first device"
                   className=""
-                  defaultValue={connection?.device1}
+                  defaultValue={connection?.device1 as string}
                 >
                   <option value="" hidden>
                     Choose device...
@@ -127,7 +127,7 @@ export default function EditConnectionForm({ show, hide, id }: ModalFormTypes) {
               <Form.Group className="flex-grow-1" style={{ minWidth: "80%" }}>
                 <Form.Label>Select device:</Form.Label>
                 <Form.Select
-                  defaultValue={connection?.device2}
+                  defaultValue={connection?.device2 as string}
                   onChange={(e) => (device2Ref.current = e.target?.value)}
                   aria-label="Select second device"
                   className=""

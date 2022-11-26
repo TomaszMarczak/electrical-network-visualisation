@@ -1,17 +1,11 @@
-import React, {
-  useContext,
-  ReactNode,
-  createContext,
-  useState,
-  useRef,
-} from "react";
+import { useContext, ReactNode, createContext, useState, useRef } from "react";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import {
   DeviceObjectType,
   LocationObjectType,
   AlertObjectType,
   ConnectionObjectType,
-} from "./appTypes";
+} from "./Types";
 import { v4 as uuidv4 } from "uuid";
 
 type ProjectAssetsContextType = {
@@ -103,37 +97,45 @@ export const ProjectAssetsProvider = ({
     pushAlert("success", `New device created!`);
   };
   const addRandomConnection = () => {
-    const cablePairs = ["2", "3", "4", "5", "6"];
-    const cablePairs2 = [null, "2"];
-    const cableDiameters = [
-      "0,5",
-      "0,75",
-      "1,5",
-      "2,5",
-      "4",
-      "6",
-      "10",
-      "16",
-      "25",
-    ];
-    const cablePair = cablePairs[Math.floor(Math.random() * cablePairs.length)];
-    const cablePair2 =
-      cablePairs2[Math.floor(Math.random() * cablePairs2.length)];
-    const cableDiameter =
-      cableDiameters[Math.floor(Math.random() * cableDiameters.length)];
-    const newConnection = {
-      id: uuidv4(),
-      name: createId(4),
-      cable: `${cablePair}x${
-        cablePair2 ? cablePair + "x" : ""
-      }${cableDiameter}`,
-      device1: devices[Math.floor(Math.random() * devices.length)].id,
-      device2: devices[Math.floor(Math.random() * devices.length)].id,
-      length: Math.floor(Math.random() * (100 - 2 + 1) + 1),
-      status: "not ready",
-    };
-    setConnections([...connections, newConnection]);
-    pushAlert("success", `New connection created!`);
+    if (devices.length > 1) {
+      const cablePairs = ["2", "3", "4", "5", "6"];
+      const cablePairs2 = [null, "2"];
+      const cableDiameters = [
+        "0,5",
+        "0,75",
+        "1,5",
+        "2,5",
+        "4",
+        "6",
+        "10",
+        "16",
+        "25",
+      ];
+      const cablePair =
+        cablePairs[Math.floor(Math.random() * cablePairs.length)];
+      const cablePair2 =
+        cablePairs2[Math.floor(Math.random() * cablePairs2.length)];
+      const cableDiameter =
+        cableDiameters[Math.floor(Math.random() * cableDiameters.length)];
+      let device1, device2;
+      device1 = devices[Math.floor(Math.random() * devices.length)].id;
+      do device2 = devices[Math.floor(Math.random() * devices.length)].id;
+      while (device2 === device1);
+
+      const newConnection = {
+        id: uuidv4(),
+        name: createId(4),
+        cable: `${cablePair}x${
+          cablePair2 ? cablePair + "x" : ""
+        }${cableDiameter}`,
+        device1,
+        device2,
+        length: Math.floor(Math.random() * (100 - 2 + 1) + 1),
+        status: "not ready",
+      };
+      setConnections([...connections, newConnection]);
+      pushAlert("success", `New connection created!`);
+    } else pushAlert("warning", "Create more devices!");
   };
 
   return (

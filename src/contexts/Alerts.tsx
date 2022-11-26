@@ -9,10 +9,10 @@ export default function Alerts() {
   return (
     <div
       style={{
-        position: "absolute",
+        position: "fixed",
         bottom: "1rem",
         right: "1rem",
-        width: "auto",
+        width: "fit-content",
         opacity: "80%",
       }}
     >

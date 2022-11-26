@@ -8,7 +8,10 @@ import DevicesTable from "./devices/DevicesTable";
 import ConnectionsTable from "./connections/ConnectionsTable";
 import { useProjectAssets } from "../contexts/ProjectAssetsContext";
 
-export default function Browser() {
+type BrowserTypes = {
+  handleShow: () => void;
+};
+export default function Browser({ handleShow }: BrowserTypes) {
   const [addDeviceModalShow, setAddDeviceModalShow] = useState<boolean>(false);
   const [addLocationModalShow, setAddLocationModalShow] =
     useState<boolean>(false);
@@ -26,7 +29,12 @@ export default function Browser() {
 
   return (
     <div className="py-3 px-5">
-      <h3 className="text-primary">Browse data</h3>
+      <div className="d-flex mb-2 align-items-center">
+        <h3 className="text-primary">Browse data</h3>
+        <Button variant="outline-primary" className="ms-3" onClick={handleShow}>
+          Visualise
+        </Button>
+      </div>
       <Form>
         <Form.Group>
           <Form.Control
@@ -109,6 +117,7 @@ export default function Browser() {
           <Button
             className="ms-1"
             size="sm"
+            disabled={devices.length < 1}
             onClick={addRandomConnection}
             variant="outline-secondary"
           >
